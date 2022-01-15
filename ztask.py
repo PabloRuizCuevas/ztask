@@ -31,11 +31,14 @@ class ZohoClient:
         """
         account_url = 'https://accounts.zoho.eu'
         url = f'{account_url}/oauth/v2/token?refresh_token={self.refresh_token}&client_id={self.client_id}&client_secret={self.client_secret}&grant_type=refresh_token'
-        r = requests.post(url)
-        self.access_token = json.loads(r.text)["access_token"]
-        self.headers = {'Authorization': f'Zoho-oauthtoken {self.access_token}'}
+        try:
+            self.access_token = self.post_request(url)["access_token"]
+            self.headers = {'Authorization': f'Zoho-oauthtoken {self.access_token}'}
+        except Exception:
+            print('get access token failed')
+            print('ztask get_refresh_token grant_token')
 
-    def get_tokens(self, grant_token):
+    def get_refresh_token(self, grant_token):
         """
         Not really working but kind of useful for first set up, need to change the grant_token
         haz esto desde la web  https://api-console.zoho.eu/client/{self.client_id}
@@ -58,12 +61,14 @@ class ZohoClient:
             r.raise_for_status()
         except requests.exceptions.HTTPError as e:
             print('HTTPError maybe oauth expired, will be renovated...')
+            print(r)
             self.get_access_token()
             if self.counter < 2:
                 self.counter += 1
                 r = fun(url, params=params, headers=self.headers)
             else:
                 print("limit trials exceeded")
+                print('generate new refresh token using get_refresh_token grant_token')
         return json.loads(r.text)
 
     def post_request(self, url, params=''):
@@ -148,10 +153,13 @@ class ZohoManager(ZohoClient, DateParser):
         """
         There is only one portal in thi case... could be hard coded
         """
-        portals = self.get_request(self.url_portals)
-        self.portal_id = portals['portals'][0]['id']
+        try:
+            portals = self.get_request(self.url_portals)
+            self.portal_id = portals['portals'][0]['id']
+        except Exception:
+            print('get_my_portal_failed')
 
-    def my_task_bugs_raw(self, tasks_bugs:str): # tasks_bugs "tasks"|"bugs"
+    def my_task_bugs_raw(self, tasks_bugs: str): # tasks_bugs "tasks"|"bugs"
         url = f"{self.url_portal}/{self.portal_id}/my{tasks_bugs}/"
         return self.get_request(url)[tasks_bugs]
 
