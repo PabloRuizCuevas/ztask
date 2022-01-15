@@ -1,6 +1,6 @@
 # ztask
 
-This project helps to log task in zoho.
+ztask helps to log task in zoho from the terminal using a taskwarrior inspired syntax.
 
 ## installation:
 install python3 and requirements from requirements.txt:
