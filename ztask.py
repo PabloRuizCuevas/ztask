@@ -4,6 +4,7 @@ from env_variables import client_id, client_secret, refresh_token, user_id
 from prettytable import PrettyTable, ORGMODE
 from dataclasses import dataclass, asdict
 from datetime import datetime
+from enum import Enum
 
 import parsedatetime as pdt
 import pandas as pd
@@ -16,7 +17,7 @@ import re
 class TablePrinter:
 
     def __init__(self):
-        #                   ;background
+        #                  ;background
         self.R = "\033[0;31;10m"  # RED
         self.G = "\033[0;32;10m"  # GREEN
         self.Y = "\033[0;33;10m"  # Yellow
@@ -142,6 +143,16 @@ class DateParser:
         print(self.parse_hours(string))
 
 
+class NoValue(Enum):
+    def __repr__(self):
+        return '<%s.%s>' % (self.__class__.__name__, self.name)
+
+
+class TaskBugType(NoValue):
+    BUG = 'bugs'
+    TASK = 'tasks'
+
+
 @dataclass
 class TaskBug:
     _id: str
@@ -187,29 +198,31 @@ class ZohoManager(ZohoClient, DateParser):
         except Exception:
             print('get_my_portal_failed')
 
-    def my_task_bugs_raw(self, tasks_bugs: str):  # tasks_bugs "tasks"|"bugs"
-        url = f"{self.url_portal}/{self.portal_id}/my{tasks_bugs}/"
-        return self.get_request(url)[tasks_bugs]
+    def my_task_bugs_raw(self, tasks_bugs: TaskBugType):  # tasks_bugs "tasks"|"bugs"
+        url = f"{self.url_portal}/{self.portal_id}/my{tasks_bugs.value}/"
+        return self.get_request(url)[tasks_bugs.value]
 
     @property
     def my_tasks_raw(self):
-        return self.my_task_bugs_raw('tasks')
+        return self.my_task_bugs_raw(TaskBugType.TASK)
 
     @property
     def my_bugs_raw(self):
-        return self.my_task_bugs_raw('bugs')
+        return self.my_task_bugs_raw(TaskBugType.BUG)
 
-    def make_task_bugs_list(self, tasks_bugs:str):
+    def make_task_bugs_list(self, tasks_bugs: TaskBugType):
         """
         Fetches my task into a df
         """
         tasks = []
         for task in self.my_task_bugs_raw(tasks_bugs):
-            if tasks_bugs == 'tasks':
+            if tasks_bugs == TaskBugType.TASK:
                 info = (task['name'], task['project']['id'], task['project']['name'],
                         task['completed'], task['status']['name'])
-            else:  # 'bugs'
+            elif tasks_bugs == TaskBugType.BUG:
                 info = (task['title'], task['project_id'], task['project_name'], task['closed'], task['status']['type'])
+            else:
+                raise print("tasks_bugs should be either task or bug")
             task_dict = TaskBug(task['id'], *info, task['key'])
             tasks.append(asdict(task_dict))
         return tasks
@@ -232,15 +245,15 @@ class ZohoManager(ZohoClient, DateParser):
 
     @property
     def my_task(self):
-        return self.make_dataframe(self.make_task_bugs_list('tasks'))
+        return self.make_dataframe(self.make_task_bugs_list(TaskBugType.TASK))
 
     @property
     def my_bugs(self):
-        return self.make_dataframe(self.make_task_bugs_list('bugs'))
+        return self.make_dataframe(self.make_task_bugs_list(TaskBugType.BUG))
 
     @property
     def my_task_bugs(self):
-        task_bugs_list = self.make_task_bugs_list('tasks') + self.make_task_bugs_list('bugs')
+        task_bugs_list = self.make_task_bugs_list(TaskBugType.TASK) + self.make_task_bugs_list(TaskBugType.BUG)
         return self.make_dataframe(task_bugs_list)
 
     def get_task_from_simple_id(self, task_simple_id):
