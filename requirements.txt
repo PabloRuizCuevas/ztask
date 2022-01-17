@@ -1,4 +1,6 @@
-
-pip install parsedatetime
-pip install tabulate
-pip install pandas
+parsedatetime~=2.6
+pandas~=1.3.3
+requests~=2.25.1
+prettytable~=3.0.0
+ipython~=7.22.0
+tabulate~=0.8.9

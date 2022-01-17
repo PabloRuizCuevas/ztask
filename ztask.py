@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 from env_variables import client_id, client_secret, refresh_token, user_id
+from prettytable import PrettyTable, ORGMODE
 from dataclasses import dataclass, asdict
 from datetime import datetime
-from prettytable import PrettyTable, ORGMODE
 
 import parsedatetime as pdt
 import pandas as pd
-
 import requests
 import json
 import sys
@@ -29,7 +28,6 @@ class TablePrinter:
         return df
 
     def colorize_header(self, df):
-        #             ;background
         df.columns = self.G + df.columns + self.N
         return df
 
@@ -143,6 +141,7 @@ class DateParser:
     def time(self, string):
         print(self.parse_hours(string))
 
+
 @dataclass
 class TaskBug:
     _id: str
@@ -174,7 +173,7 @@ class ZohoManager(ZohoClient, DateParser):
 
     def get_user_data(self):
         """
-        Not really implemented... todo: make this scripted
+        Can be obtained from zoho projects easily but would be better scripted
         """
         self.user_id = user_id
 
@@ -258,20 +257,18 @@ class ZohoManager(ZohoClient, DateParser):
         hours = self.parse_hours(hours)
 
         tasks_bugs = task['key'].lower()+'s'
-        print(tasks_bugs)
         url = f"{self.url_portal}/{self.portal_id}/projects/{project_id}/{tasks_bugs}/{task_id}/logs/"
-        params = {"date": date,
-                  "bill_status": "Billable",
-                  "hours": hours,
-                  "owner": self.user_id}
+        params = {"date": date, "bill_status": "Billable", "hours": hours, "owner": self.user_id}
         r = self.post_request(url, params=params)
         print(f"Task {task_simple_id}: {task['task_name']}, logged :)")
         return r
 
     def update(self, task_simple_id, params):
+        """
+        Update task from params and task id
+        """
         task = self.get_task_from_simple_id(task_simple_id)
         url = f"{self.url_portal}/{self.portal_id}/projects/{task['project_id']}/tasks/{task['id']}/"
-        # params = '[{self.user_id: 30 }]'
         print(url)
         r = self.post_request(url, params=str(params))
         if "error" not in dict(r):
