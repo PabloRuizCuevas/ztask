@@ -1,5 +1,6 @@
+# Complete the env variables before using this code, be aware that once you write these you cannot commit/share this file:
 
-# you can get this variables from: https://api-console.zoho.eu
+# You can get this variables from: https://api-console.zoho.eu
 
 client_id = 'Write here your client id'
 client_secret = 'Write here your client secret token'
@@ -12,6 +13,7 @@ client_secret = 'Write here your client secret token'
 
 refresh_token = "Write here your client refresh token"
 
-# write here your user id:  this will be later coded, but for now can be taken from any task...
+# write here your user id: can be found directly at your zoho projects portal https://projects.zoho.eu in the upper right cornner
+# click the user icon and copy and paste the user id
 
 user_id = 00000000000
