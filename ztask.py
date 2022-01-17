@@ -3,7 +3,7 @@
 from env_variables import client_id, client_secret, refresh_token, user_id
 from dataclasses import dataclass, asdict
 from datetime import datetime
-from tabulate import tabulate
+from prettytable import PrettyTable, ORGMODE
 
 import parsedatetime as pdt
 import pandas as pd
@@ -12,6 +12,34 @@ import requests
 import json
 import sys
 import re
+
+
+class TablePrinter:
+
+    def __init__(self):
+        #                   ;background
+        self.R = "\033[0;31;10m"  # RED
+        self.G = "\033[0;32;10m"  # GREEN
+        self.Y = "\033[0;33;10m"  # Yellow
+        self.B = "\033[0;34;10m"  # Blue
+        self.N = "\033[0m"  # Reset
+
+    def colorize(self, df, key):
+        df[key] = self.R + df[key] + self.N
+        return df
+
+    def colorize_header(self, df):
+        #             ;background
+        df.columns = self.G + df.columns + self.N
+        return df
+
+    def print_table(self, df):
+        df = self.colorize_header(df)
+        x = PrettyTable()
+        x.set_style(ORGMODE)
+        x.field_names = list(df.keys())
+        x.add_rows(df.values.tolist())
+        print(x)
 
 
 class ZohoClient:
@@ -142,6 +170,7 @@ class ZohoManager(ZohoClient, DateParser):
 
         self.get_user_data()
         self.get_my_portal()
+        self.printer = TablePrinter()
 
     def get_user_data(self):
         """
@@ -255,17 +284,18 @@ class ZohoManager(ZohoClient, DateParser):
         """
         tasks list
         """
-
         df = self.my_task_bugs[['project_name', 'task_name', 'status', 'key']].copy()
         df['type'] = df['key'].str.replace("Bug", "Issue")
-        df['task name'] = df['task_name'].str.slice(0, 45)
+        df['task name'] = df['task_name'].str.slice(0, 50)
         df['project name'] = df['project_name'].str.slice(0, 18)
-        print(tabulate(df[['project name', 'task name', 'status', 'type']], headers='keys', tablefmt='psql'))
+        df['status'] = df['status'].str.slice(0, 15)
+        df['index'] = df.index.values
+        self.printer.print_table(df[['index', 'project name', 'task name', 'status', 'type']])
 
     def all_task(self):
         """gets all my task, even closed ones"""
         tasks = self.my_task_bugs
-        print(tabulate(tasks[['project_name', 'task_name', 'status']], headers='keys', tablefmt='psql'))
+        self.printer.print_table(tasks[['project_name', 'task_name', 'status']])
         return tasks
 
     def __str__(self):
