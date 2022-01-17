@@ -38,8 +38,10 @@ you will need to set the following env variables in the env_variables.py file:
 -client_id
 -client_secret
 -refresh_token 
+-user_id
 
 These variables can be found at https://api-console.zoho.eu, more information at env_variables.py
+The user_id can be found at zoho projects, clicking in the right corner (user icon)
 
 ## other
 

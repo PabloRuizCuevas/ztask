@@ -159,7 +159,7 @@ class ZohoManager(ZohoClient, DateParser):
         except Exception:
             print('get_my_portal_failed')
 
-    def my_task_bugs_raw(self, tasks_bugs: str): # tasks_bugs "tasks"|"bugs"
+    def my_task_bugs_raw(self, tasks_bugs: str):  # tasks_bugs "tasks"|"bugs"
         url = f"{self.url_portal}/{self.portal_id}/my{tasks_bugs}/"
         return self.get_request(url)[tasks_bugs]
 
@@ -264,7 +264,7 @@ class ZohoManager(ZohoClient, DateParser):
 
     def all_task(self):
         """gets all my task, even closed ones"""
-        tasks = self.my_task_bugs.reset_index(drop=True)
+        tasks = self.my_task_bugs
         print(tabulate(tasks[['project_name', 'task_name', 'status']], headers='keys', tablefmt='psql'))
         return tasks
 
