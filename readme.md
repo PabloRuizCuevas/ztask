@@ -1,3 +1,9 @@
+
+<p align="center">
+  <img src="/images/use_example.png">
+</p>
+
+
 # ztask
 
 ztask helps to log task in zoho from the terminal using a taskwarrior inspired syntax.
