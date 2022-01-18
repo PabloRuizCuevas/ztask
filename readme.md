@@ -1,7 +1,7 @@
 
 
 <p align="center">
-  <img src="/images/use_example.png">
+  <img src="https://github.com/PabloRuizCuevas/ztask/blob/master/images/use_example.png">
 </p>
 
 # <b>Ztask</b>
