@@ -75,7 +75,9 @@ Or in Unix based systems:
 
 Set the following env variables in the env_variables.py file (copy paste and fill):
 
-`[variables] client_id = <YOUR CLIENT ID> ` 
+`[variables]`
+
+`client_id = <YOUR CLIENT ID> `
 
 `client_secret = <YOUR CLIENT SECRET> `
 
