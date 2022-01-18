@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-from env_variables import client_id, client_secret, refresh_token, user_id
 from prettytable import PrettyTable, ORGMODE
 from dataclasses import dataclass, asdict
+from configparser import ConfigParser
 from datetime import datetime
+from pathlib import Path
 from enum import Enum
 
 import parsedatetime as pdt
@@ -12,6 +13,16 @@ import requests
 import json
 import sys
 import re
+import os
+
+# needs the ztask.ini in home .ztask
+path = os.path.join(str(Path.home()), '.ztask', 'ztask.ini')
+parser = ConfigParser()
+parser.read(path)
+var = parser['variables']
+
+client_id, client_secret = var['client_id'], var['client_secret']
+refresh_token, user_id = var['refresh_token'], var['user_id']
 
 
 class TablePrinter:
@@ -324,10 +335,12 @@ class ZohoManager(ZohoClient, DateParser):
                            })
         self.printer.print_table(df[['index', 'project name', 'task name', 'status', 'type']])
 
-    def all_task(self):
+    def long(self):
         """gets all my task, even closed ones"""
         tasks = self.my_task_bugs
-        self.printer.print_table(tasks[['project_name', 'task_name', 'status']])
+        tasks['index'] = tasks.index.values
+        tasks['type'] = tasks['key'].str.replace("Bug", "Issue")
+        self.printer.print_table(tasks[['index', 'project_name', 'task_name', 'status', 'type']])
         return tasks
 
     def __str__(self):
@@ -336,11 +349,15 @@ class ZohoManager(ZohoClient, DateParser):
         return ""
 
 
-if __name__ == '__main__':
-
+def main():
     ztask = ZohoManager()
     if len(sys.argv) == 1:
         ztask.list()
     else:
         getattr(ztask, sys.argv[1])(*sys.argv[2:])
+
+
+if __name__ == '__main__':
+    main()
+
 
