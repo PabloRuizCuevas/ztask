@@ -12,26 +12,23 @@ damned timesheets from the terminal using a
 
 This little program is made by and for terminal enthusiasts, <b>enjoy it!</b>
 
-## requirements
+## Requirements
 
-- python3
-- requirements.txt:
-
-You can install the requirements (preferably in pipenv/conda environment) using:
-
-> python -m pip install -r requirements.txt
+You only need a distribution of python3 installed.
 
 ## ⚙️Installation:
 
-Download directly script and set the variables at env_variables.py
+You can install the requirements (preferably in an environment) using:
 
-Is convenient to set the alias "ztask", in ubuntu you can use the following alias:
+> pip install ztask
 
-> alias ztask='python3 <your_ztask_path>/ztask.py'
+Download directly the script and set the variables at your user path in .ztask/env_variables.py, 
+more details about these variables bellow.
+ 
+If you install "ztask" in a environment you will need to initialize the environment before using ztask, 
+for so sometimes is convenient to use an alias like:
 
-using an environment (conda) this will look like;
-
-> alias ztask='conda activate <env_name> && python3 <your_ztask_path>/ztask.py'
+> alias eztask='conda activate <env_name> && ztask'
 
 ## Usage:
 
@@ -47,13 +44,13 @@ For printing my zoho task:
 
 Shows all the table, without truncating the table:
 
-> ztask all_task :
+> ztask long
 
 Log the task in zoho:
 
-> ztask log number_of_task 'date' hh:mm :
+> ztask log number_of_task 'date' hh:mm
 
-ztask date suports natural language such as: 'today', 'yesterday' etc
+Ztask date suports natural language such as: 'today', 'yesterday' etc
 
 ## Examples:
 
@@ -66,14 +63,37 @@ Log the taks 12 today 8 hours:
 > ztask log 12 'today' 08:00
 
 ## 💾 env variables
-you will need to set the following env variables in the env_variables.py file:
 
-- client_id
-- client_secret
-- refresh_token 
-- user_id
+For using the program you will need to create a folder called .ztask in your user path and a file called .ztask 
+the path would look something like: 
 
-These variables can be found at https://api-console.zoho.eu, more information at env_variables.py
+> C:\\Users\\YOUR USER NAME\\.ztask\\ztask.ini
+
+Or in Unix based systems:
+
+> /home/YOUR USER NAME/.ztask/ztask.ini
+
+Set the following env variables in the env_variables.py file (copy paste and fill):
+
+`[variables] client_id = <YOUR CLIENT ID> ` 
+
+`client_secret = <YOUR CLIENT SECRET> `
+
+`refresh_token = <YOUR REFRESH TOKEN>`
+
+`user_id = <YOUR USER ID>`
+
+These variables can be found at https://api-console.zoho.eu after creating a self client.
+
+You can get your refresh_token after getting the grant token. Go to self client same web and generate the grant token
+using the scope:
+
+`ZohoProjects.tasks.ALL,ZohoProjects.timesheets.ALL,ZohoProjects.projects.ALL,ZohoProjects.portals.READ,ZohoProjects.bugs.ALL`
+
+Copy the grant_token and execute in the terminal:
+
+> ztask get_refresh_token <YOUR GRANT TOKEN>
+
 The user_id can be found at zoho projects, clicking in the right corner (user icon)
 
 ## other
