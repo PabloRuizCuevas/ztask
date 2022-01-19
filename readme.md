@@ -1,8 +1,6 @@
 
 
-<p align="center">
-  <img src="https://github.com/PabloRuizCuevas/ztask/blob/master/images/use_example.png">
-</p>
+![](https://github.com/PabloRuizCuevas/ztask/raw/master/images/use_example.png)
 
 # <b>Ztask</b>
 
