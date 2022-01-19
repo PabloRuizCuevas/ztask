@@ -30,13 +30,9 @@ for so sometimes is convenient to use an alias like:
 
 ## Usage:
 
-Ztask, as it should be, is a <b>terminal user interface</b> that can be run with:
+Ztask, as it should be, is a <b>terminal user interface</b> that can be run with command "ztask":
 
->python3 ztask.py (in the path) 
-
-Or more conveniently using the alias <b>ztask</b>:
-
-For printing my zoho task:
+For printing your zoho task:
 
 > ztask
 
@@ -62,8 +58,10 @@ Log the taks 12 today 8 hours:
 
 ## 💾 env variables
 
-For using the program you will need to create a folder called .ztask in your user path and a file called .ztask 
-the path would look something like: 
+The first time you execute the program will create a file in your user directory, and will ask you to fill the
+content using a terminal interface.
+
+If something fails in the process the file should look like: 
 
 > C:\\Users\\YOUR USER NAME\\.ztask\\ztask.ini
 
@@ -85,21 +83,14 @@ Set the following env variables in the env_variables.py file (copy paste and fil
 
 These variables can be found at https://api-console.zoho.eu after creating a self client.
 
-You can get your refresh_token after getting the grant token. Go to self client same web and generate the grant token
+You can get your refresh_token after getting first the grant token. Go to self client same web and generate the grant token
 using the scope:
 
 `ZohoProjects.tasks.ALL,ZohoProjects.timesheets.ALL,ZohoProjects.projects.ALL,ZohoProjects.portals.READ,ZohoProjects.bugs.ALL`
 
-Copy the grant_token and execute in the terminal:
+If you couldn't get the config file done you can get your refresh token using the grant_token:
 
-> ztask get_refresh_token <YOUR GRANT TOKEN>
+> ztask get_refresh_token "YOUR GRANT TOKEN"
 
 The user_id can be found at zoho projects, clicking in the right corner (user icon)
-
-## other
-
-For checking the formatted documentation:
-
-> pip install mdv 
-> mdv readme.md
 
